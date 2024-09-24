@@ -1,0 +1,58 @@
+@media (max-width: 520px) {
+    #left-and-main-container #main-content {
+        margin-left: 0;
+    }
+}
+
+#main-content {
+    color: wheat;
+    width: 80%;
+    margin: 70px 50px 100px 20%;
+    padding-left: 4%;
+}
+
+.track-table {
+    width: 100%; /* Ensure the table takes full width */
+    border-spacing: 0px;
+    margin-bottom: 20px; /* Optional: Space between table and surrounding elements */
+}
+
+.track-table th, 
+.track-table td {
+    padding: 5px 20px; /* Space inside each cell */
+    text-align: left;
+    width: auto; /* Allow cells to auto-size */
+}
+
+.track-table tr {
+    width: 100%; /* Make each row take full width */
+    display: table-row; /* Ensure it follows table-row layout */
+}
+
+.track-table tr:hover {
+    background-color: rgb(21, 21, 21); /* Highlight row on hover */
+}
+
+.track-table img {
+    border-radius: 50%;
+    width: 50px; /* Set a fixed size for the images */
+}
+
+.track-table button {
+    width: 40px;
+    height: 40px;
+    color: black;
+    background-color: wheat;
+    border-radius: 10%;
+    border-color: black;
+}
+
+.track-table button:hover {
+    background-color: white;
+    cursor: pointer;
+    border-color: white;
+}
+
+.new-song-heading {
+    color: white;
+}

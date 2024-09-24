@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(36, 36, 36);
+}
+
+a {
+    text-decoration: none;
+}
+
+.position-fix {
+    position: fixed;
+}
+
+#left-and-main-container {
+    display: flex;
+}
+
+#left-container {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 20%;
+    height: 100vh;
+    /* border-right: 1px solid rgba(255, 255, 255, 0.2); */
+    /* background-color: rgb(0, 0, 0); */
+    box-shadow: 4px 0px 4px 0 rgba(30, 0, 20, 0.2), 8px 0px 8px 0 rgba(30, 0, 20, 0.1);
+}
+
+
+.player {
+    bottom: 0px;
+    z-index: 111;
+    width: 100%;
+    left: 20%;
+}
+
+#audio-player {
+    width: 80%;
+}

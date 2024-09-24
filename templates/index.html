@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nav_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/left_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_content_css.css') }}">
+
+</head>
+
+<body>
+    <nav id="nav-container" class="position-fix">
+        {% include 'components/nav.html' %}
+    </nav>
+
+    <div id="left-and-main-container" >
+        <div id="left-container">
+            {% include 'components/left.html' %}
+        </div>
+        <div id="main-content">
+            <div id="track-list" class="container"></div>
+            <div id="music-player"></div>
+            <div id="recommended-songs"></div>
+        </div>
+    </div>
+    
+    <div class="player position-fix">
+        <audio id="audio-player" controls>
+            <source id="audio-source" src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
