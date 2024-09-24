@@ -34,12 +34,18 @@ def index():
 @app.route('/tracks/new-songs')
 def new_songs():
     alltracks = get_tracks()
-    return jsonify(sorted(alltracks, key=lambda x: x['releaseYear'], reverse=True)[: 10])
+    return jsonify(sorted(alltracks, key=lambda x: x['releaseYear'], reverse=True))
+
+@app.route('/tracks/old-songs')
+def old_songs():
+    alltracks = get_tracks()
+    return jsonify(sorted(alltracks, key=lambda x: x['releaseYear']))
+
 
 @app.route('/tracks/popular-songs')
 def popular_songs():
     alltracks = get_tracks()
-    return jsonify(sorted(alltracks, key=lambda x: x['popularity'], reverse=True)[: 10])
+    return jsonify(sorted(alltracks, key=lambda x: x['popularity'], reverse=True))
 
 if __name__ == '__main__':
     app.run(debug=True)
