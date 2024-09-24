@@ -2,9 +2,8 @@ const trackList = document.getElementById('track-list');
 const audioPlayer = document.getElementById('audio-player');
 const audioSource = document.getElementById('audio-source');
 
-// Function to create and append a track table
+
 function createTrackTable(tracks, headingText) {
-    // Clear the trackList container before appending new elements
     trackList.innerHTML = '';
 
     const heading = document.createElement('h2');
@@ -56,11 +55,20 @@ function createTrackTable(tracks, headingText) {
     trackList.appendChild(table);
 }
 
-
+function setActive(button) {=
+    const buttons = document.querySelectorAll('.library-content-btn');
+    
+    buttons.forEach(btn => {
+        btn.classList.remove('active-btn');
+    });
+    
+    button.classList.add('active-btn');
+}
 
 function newRelease() {
     console.log("newRelease working");
-
+    const newReleaseBtn = document.getElementById('new-releases-btn');
+    newReleaseBtn.classList.add('active-btn');
     fetch('/tracks/new-songs')
         .then(response => response.json())
         .then(tracks => {
