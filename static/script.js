@@ -55,7 +55,7 @@ function createTrackTable(tracks, headingText) {
     trackList.appendChild(table);
 }
 
-function setActive(button) {=
+function setActive(button) {
     const buttons = document.querySelectorAll('.library-content-btn');
     
     buttons.forEach(btn => {
