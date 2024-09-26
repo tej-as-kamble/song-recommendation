@@ -1,0 +1,36 @@
+h1, h2, h3 {
+    padding: 0px;
+    margin: 0px;
+}
+#music-player {
+    display: flex;
+    align-items: center;
+}
+
+#music-player img {
+    width: 200px;
+    border-radius: 50%;
+}
+h1{
+    color: white;
+    font-size: 50px;
+    margin-bottom: 5px;
+}
+h2, h3{
+    color: white;
+    opacity: 50%;
+    font-size: 16px;
+}
+
+.song-details {
+    height: 100%;
+    width: 50%;
+    margin: 3% 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#player {
+    margin-top: 15px;
+}

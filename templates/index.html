@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/nav_style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/left_style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main_content_css.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/music_player.css') }}">
 
 </head>
 
@@ -22,15 +23,15 @@
             {% include 'components/left.html' %}
         </div>
         <div id="main-content">
-            <div id="track-list" class="container"></div>
             <div id="music-player">
-                <div class="player position-fix">
+                <!-- <div class="player position-fix">
                     <audio id="audio-player" controls>
                         <source id="audio-source" src="" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
-                </div>  
+                </div>   -->
             </div>
+            <div id="track-list" class="container"></div>
             <div id="recommended-songs"></div>
         </div>
     </div>

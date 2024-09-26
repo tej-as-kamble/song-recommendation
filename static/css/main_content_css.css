@@ -5,10 +5,12 @@
 }
 
 #main-content {
+    display: block;
     color: wheat;
     width: 80%;
-    margin: 70px 50px 100px 20%;
+    margin: 80px 50px 0px 20%;
     padding-left: 4%;
+    height: 100vh;
 }
 
 .track-table {

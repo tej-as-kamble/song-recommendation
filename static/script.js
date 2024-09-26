@@ -1,14 +1,26 @@
 const trackList = document.getElementById('track-list');
-const audioPlayer = document.getElementById('audio-player');
-const audioSource = document.getElementById('audio-source');
+// const audioPlayer = document.getElementById('audio-player');
+// const audioSource = document.getElementById('audio-source');
 const recommendedSongs = document.getElementById('recommended-songs');
+const musicPlayer = document.getElementById('music-player');
 
+const audioSource = document.createElement('source');
+audioSource.id = 'audio-source';
+audioSource.src = '';
+audioSource.type = 'audio/mpeg';
+
+const player = document.createElement('div');
+player.id = 'player';
+const audioPlayer = document.createElement('audio');
+audioPlayer.id = 'audio-player';
+audioPlayer.controls = true;
 
 function createTrackTable(tracks, headingText) {
     const parts = document.createDocumentFragment();
 
     const heading = document.createElement('h2');
     heading.innerText = headingText;
+    heading.classList.add('new-song-heading');
     parts.appendChild(heading);
 
     const table = document.createElement('table');
@@ -44,6 +56,7 @@ function createTrackTable(tracks, headingText) {
         playButton.innerText = 'Play';
         playButton.addEventListener('click', function () {
             audioSource.src = track.previewUrl;
+            console.log(audioSource);
             audioPlayer.load();
             audioPlayer.play();
         });
@@ -56,6 +69,7 @@ function createTrackTable(tracks, headingText) {
     table.appendChild(tbody);
     parts.appendChild(table);
 
+    musicPlayer.innerHTML = '';
     trackList.innerHTML = '';
     trackList.appendChild(parts);
 
@@ -70,7 +84,7 @@ function createTrackTable(tracks, headingText) {
             buttons.forEach(btn => {
                 btn.classList.remove('active-btn');
             });
-            createMusicPlayer();
+            createMusicPlayer(row.id);
 
         });
     });
@@ -125,7 +139,6 @@ function topSongs() {
 
 function bestArtists(){
     console.log("bestArtists working");
-    trackList.innerHTML = '';
     const newUrl = `/best-artists`;
     history.pushState(null, '', newUrl);
 
@@ -134,6 +147,9 @@ function bestArtists(){
 
     const heading = document.createElement('h2');
     heading.innerText = "We will add BEST Artists soon...";
+
+    musicPlayer.innerHTML = '';
+    trackList.innerHTML = '';
     trackList.appendChild(heading);
 }
 
@@ -187,17 +203,71 @@ else if(url_pathname[1]==="old-songs"){
 }
 else if(url_pathname[1]==="track" && url_pathname[2]){
     // console.log(url_pathname[2]);
-    createMusicPlayer();
+    createMusicPlayer(url_pathname[2]);
 }
 else{
     newRelease();
 }
 
 
-function createMusicPlayer(){
-    console.log("music player working");
-    trackList.innerHTML = '';
-    const heading = document.createElement('h2');
-    heading.innerText = "We will add Music Player soon...";
-    trackList.appendChild(heading);
+function createMusicPlayer(id){
+    console.log("music player working and id is", id);
+    // const heading = document.createElement('h2');
+    // heading.innerText = "We will add Music Player soon...";
+    // trackList.appendChild(heading);
+    const url = `/hidden-url/track/${id}`;
+    fetch(url)
+        .then(response => response.json())
+        .then(track => {
+            console.log(track);
+            const parts = document.createDocumentFragment();
+
+            const trackImgDiv = document.createElement('div');
+            const trackImg = document.createElement('img');
+            trackImg.src = track.trackImage;
+            trackImg.alt = "track img";
+            trackImgDiv.appendChild(trackImg);
+            parts.appendChild(trackImgDiv);
+
+            const songDetails = document.createElement('div');
+            songDetails.classList.add('song-details');
+
+            const songAndMovieAndArtistsNameDiv = document.createElement('div');
+            const songName = document.createElement('h1');
+            songName.innerText = track.songName;
+            songName.id = 'song-name';
+
+            const movieName = document.createElement('h2');
+            movieName.innerText = track.album + ' (' + track.releaseYear + ')';
+            movieName.id = 'movie-name';
+            
+            const artistsName = document.createElement('h3');
+            artistsName.innerText = track.artists;
+            artistsName.id = 'artists-name';
+
+            songAndMovieAndArtistsNameDiv.appendChild(songName);
+            songAndMovieAndArtistsNameDiv.appendChild(movieName);
+            songAndMovieAndArtistsNameDiv.appendChild(artistsName);
+            songDetails.appendChild(songAndMovieAndArtistsNameDiv);
+            
+
+            audioPlayer.appendChild(audioSource);
+            player.appendChild(audioPlayer);
+
+            songDetails.appendChild(player);
+
+            parts.appendChild(songDetails);
+
+            musicPlayer.innerHTML = '';
+            trackList.innerHTML = '';
+            musicPlayer.appendChild(parts);
+
+            audioSource.src = track.previewUrl;
+            console.log(audioSource);
+            if(audioPlayer.paused){
+                audioPlayer.load();
+            }
+        })
+        .catch(error => console.error('Error fetching tracks:', error));
+
 }
