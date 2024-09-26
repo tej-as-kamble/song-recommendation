@@ -23,17 +23,18 @@
         </div>
         <div id="main-content">
             <div id="track-list" class="container"></div>
-            <div id="music-player"></div>
+            <div id="music-player">
+                <div class="player position-fix">
+                    <audio id="audio-player" controls>
+                        <source id="audio-source" src="" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>  
+            </div>
             <div id="recommended-songs"></div>
         </div>
     </div>
-    
-    <div class="player position-fix">
-        <audio id="audio-player" controls>
-            <source id="audio-source" src="" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-    </div>    
+      
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 

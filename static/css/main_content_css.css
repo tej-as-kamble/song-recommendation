@@ -27,6 +27,7 @@
 .track-table tr {
     width: 100%; /* Make each row take full width */
     display: table-row; /* Ensure it follows table-row layout */
+    cursor: pointer;
 }
 
 .track-table tr:hover {
