@@ -1,26 +1,40 @@
-h1, h2, h3 {
-    padding: 0px;
-    margin: 0px;
-}
 #music-player {
     display: flex;
     align-items: center;
+}
+
+#music-player h1 {
+    color: white;
+    font-size: 50px;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 5px;
+    
+}
+
+#music-player h2 {
+    color: white;
+    opacity: 70%;
+    font-size: 16px;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 3px;
+}
+
+#music-player h3 {
+    color: white;
+    opacity: 70%;
+    font-size: 17px;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 10px;
 }
 
 #music-player img {
     width: 200px;
     border-radius: 50%;
 }
-h1{
-    color: white;
-    font-size: 50px;
-    margin-bottom: 5px;
-}
-h2, h3{
-    color: white;
-    opacity: 50%;
-    font-size: 16px;
-}
+
 
 .song-details {
     height: 100%;

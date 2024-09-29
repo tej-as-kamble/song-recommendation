@@ -15,6 +15,15 @@ const audioPlayer = document.createElement('audio');
 audioPlayer.id = 'audio-player';
 audioPlayer.controls = true;
 
+let storeLibrary = {
+    "new-release": [],
+    "top-songs": [],
+    "new-songs": [],
+    "old-songs": []
+};
+
+let storeSong = {};
+
 function createTrackTable(tracks, headingText) {
     const parts = document.createDocumentFragment();
 
@@ -56,7 +65,7 @@ function createTrackTable(tracks, headingText) {
         playButton.innerText = 'Play';
         playButton.addEventListener('click', function () {
             audioSource.src = track.previewUrl;
-            console.log(audioSource);
+            // console.log(audioSource);
             audioPlayer.load();
             audioPlayer.play();
         });
@@ -84,11 +93,26 @@ function createTrackTable(tracks, headingText) {
             buttons.forEach(btn => {
                 btn.classList.remove('active-btn');
             });
-            createMusicPlayer(row.id);
+            fetchMusic(row.id);
 
         });
     });
     
+}
+
+
+function fetchBtn(category, fetchUrl, headingText) {
+    if (storeLibrary[category].length > 0) {
+        createTrackTable(storeLibrary[category], headingText);
+    } else {
+        fetch(fetchUrl)
+            .then(response => response.json())
+            .then(tracks => {
+                storeLibrary[category] = tracks; // Store fetched data as raw data
+                createTrackTable(tracks, headingText);
+            })
+            .catch(error => console.error(`Error fetching ${category} tracks:`, error));
+    }
 }
 
 
@@ -112,12 +136,7 @@ function newRelease() {
     const curr_Btn = document.getElementById("new-releases-btn");
     setActive(curr_Btn);
 
-    fetch('/hidden-url/tracks/new-songs')
-        .then(response => response.json())
-        .then(tracks => {
-            createTrackTable(tracks, 'New Release');
-        })
-        .catch(error => console.error('Error fetching tracks:', error));
+    fetchBtn("new-release", '/hidden-url/tracks/new-songs', 'New Release');
 }
 
 
@@ -129,12 +148,7 @@ function topSongs() {
     const curr_Btn = document.getElementById("top-songs-btn");
     setActive(curr_Btn);
 
-    fetch('/hidden-url/tracks/popular-songs')
-        .then(response => response.json())
-        .then(tracks => {
-            createTrackTable(tracks, 'Popular Songs');
-        })
-        .catch(error => console.error('Error fetching tracks:', error));
+    fetchBtn("top-songs", '/hidden-url/tracks/popular-songs', 'Popular Songs');
 }
 
 function bestArtists(){
@@ -162,12 +176,7 @@ function newSongs() {
     const curr_Btn = document.getElementById("new-songs-btn");
     setActive(curr_Btn);
 
-    fetch('/hidden-url/tracks/new-songs')
-        .then(response => response.json())
-        .then(tracks => {
-            createTrackTable(tracks, 'New Songs');
-        })
-        .catch(error => console.error('Error fetching tracks:', error));
+    fetchBtn("new-songs", '/hidden-url/tracks/new-songs', 'New Songs');
 }
 
 function oldSongs(){
@@ -178,12 +187,7 @@ function oldSongs(){
     const curr_Btn = document.getElementById("old-songs-btn");
     setActive(curr_Btn);
     
-    fetch('/hidden-url/tracks/old-songs')
-        .then(response => response.json())
-        .then(tracks => {
-            createTrackTable(tracks, 'Old Songs');
-        })
-        .catch(error => console.error('Error fetching tracks:', error));
+    fetchBtn("old-songs", '/hidden-url/tracks/old-songs', 'Old Songs');
 }
 
 
@@ -203,71 +207,76 @@ else if(url_pathname[1]==="old-songs"){
 }
 else if(url_pathname[1]==="track" && url_pathname[2]){
     // console.log(url_pathname[2]);
-    createMusicPlayer(url_pathname[2]);
+    fetchMusic(url_pathname[2]);
 }
 else{
     newRelease();
 }
 
+function createMusicPlayer(track){
+    console.log("createMusicPlayer working");
+    const parts = document.createDocumentFragment();
 
-function createMusicPlayer(id){
+    const trackImgDiv = document.createElement('div');
+    const trackImg = document.createElement('img');
+    trackImg.src = track.trackImage;
+    trackImg.alt = "track img";
+    trackImgDiv.appendChild(trackImg);
+    parts.appendChild(trackImgDiv);
+
+    const songDetails = document.createElement('div');
+    songDetails.classList.add('song-details');
+
+    const songAndMovieAndArtistsNameDiv = document.createElement('div');
+    const songName = document.createElement('h1');
+    songName.innerText = track.songName;
+    songName.id = 'song-name';
+
+    const movieName = document.createElement('h2');
+    movieName.innerText = track.album + ' (' + track.releaseYear + ')';
+    movieName.id = 'movie-name';
+            
+    const artistsName = document.createElement('h3');
+    artistsName.innerText = track.artists;
+    artistsName.id = 'artists-name';
+
+    songAndMovieAndArtistsNameDiv.appendChild(songName);
+    songAndMovieAndArtistsNameDiv.appendChild(movieName);
+    songAndMovieAndArtistsNameDiv.appendChild(artistsName);
+    songDetails.appendChild(songAndMovieAndArtistsNameDiv);
+            
+
+    audioPlayer.appendChild(audioSource);
+    audioSource.src = track.previewUrl;
+    if(audioPlayer.paused){
+        audioPlayer.load();
+    }
+    player.appendChild(audioPlayer);
+    songDetails.appendChild(player);
+
+    parts.appendChild(songDetails);
+
+    musicPlayer.innerHTML = '';
+    trackList.innerHTML = '';
+    musicPlayer.appendChild(parts);
+
+}
+
+function fetchMusic(id){
     console.log("music player working and id is", id);
-    // const heading = document.createElement('h2');
-    // heading.innerText = "We will add Music Player soon...";
-    // trackList.appendChild(heading);
-    const url = `/hidden-url/track/${id}`;
-    fetch(url)
-        .then(response => response.json())
-        .then(track => {
-            console.log(track);
-            const parts = document.createDocumentFragment();
-
-            const trackImgDiv = document.createElement('div');
-            const trackImg = document.createElement('img');
-            trackImg.src = track.trackImage;
-            trackImg.alt = "track img";
-            trackImgDiv.appendChild(trackImg);
-            parts.appendChild(trackImgDiv);
-
-            const songDetails = document.createElement('div');
-            songDetails.classList.add('song-details');
-
-            const songAndMovieAndArtistsNameDiv = document.createElement('div');
-            const songName = document.createElement('h1');
-            songName.innerText = track.songName;
-            songName.id = 'song-name';
-
-            const movieName = document.createElement('h2');
-            movieName.innerText = track.album + ' (' + track.releaseYear + ')';
-            movieName.id = 'movie-name';
-            
-            const artistsName = document.createElement('h3');
-            artistsName.innerText = track.artists;
-            artistsName.id = 'artists-name';
-
-            songAndMovieAndArtistsNameDiv.appendChild(songName);
-            songAndMovieAndArtistsNameDiv.appendChild(movieName);
-            songAndMovieAndArtistsNameDiv.appendChild(artistsName);
-            songDetails.appendChild(songAndMovieAndArtistsNameDiv);
-            
-
-            audioPlayer.appendChild(audioSource);
-            player.appendChild(audioPlayer);
-
-            songDetails.appendChild(player);
-
-            parts.appendChild(songDetails);
-
-            musicPlayer.innerHTML = '';
-            trackList.innerHTML = '';
-            musicPlayer.appendChild(parts);
-
-            audioSource.src = track.previewUrl;
-            console.log(audioSource);
-            if(audioPlayer.paused){
-                audioPlayer.load();
-            }
-        })
-        .catch(error => console.error('Error fetching tracks:', error));
-
+    if (storeSong[id]) {
+        console.log("song exist in storeSong");
+        createMusicPlayer(storeSong[id]);
+    }
+    else{
+        const url = `/hidden-url/track/${id}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(track => {
+                // console.log(track);
+                storeSong[id]=track;
+                createMusicPlayer(track);
+            })
+            .catch(error => console.error('Error fetching tracks:', error));
+    }
 }
