@@ -4,30 +4,35 @@
 }
 
 #music-player h1 {
-    color: white;
-    font-size: 50px;
     padding: 0px;
     margin: 0px;
     margin-bottom: 5px;
-    
+    color: wheat;
+    font-size: 25px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #music-player h2 {
-    color: white;
-    opacity: 70%;
-    font-size: 16px;
     padding: 0px;
     margin: 0px;
     margin-bottom: 3px;
+    color: grey;
+    font-size: 16px;
+    font-weight: 100;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #music-player h3 {
-    color: white;
-    opacity: 70%;
-    font-size: 17px;
     padding: 0px;
     margin: 0px;
     margin-bottom: 10px;
+    color: grey;
+    font-size: 14px;
+    font-weight: 100;
 }
 
 #music-player img {
@@ -45,6 +50,44 @@
     justify-content: space-between;
 }
 
-#player {
-    margin-top: 15px;
+#play-btn-div {
+    display: flex;
+    margin: 10px 0px;
+    align-items: center;
+}
+
+#play-btn2 {
+    background-color: red;
+    width: 100px;
+    height: 30px;
+    border: 0;
+    border-radius: 40px 40px;
+}
+
+#play-btn2.playing {
+    color: white; /* Color when the button is in the playing state */
+}
+
+#play-btn2:hover {
+    color: white;
+    cursor: pointer;
+}
+
+#spotify-link {
+    margin-left: 20%;
+}
+
+#spotify-link a {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #000;
+}
+
+#spotify-link img{
+    width: 30px;
+}
+
+#spotify-link p {
+    margin: 0px 0px 0px 5px;
 }

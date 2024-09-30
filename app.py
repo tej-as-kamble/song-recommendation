@@ -64,6 +64,10 @@ def music_player(trackId):
     else:
         return jsonify({"error": "Track not found"})
 
+@app.route('/hidden-url/track_for_search')
+def serach_track():
+    alltracks = get_tracks()
+    return jsonify([{'songName': track['songName'], 'trackId': track['trackId']} for track in alltracks])
 
 if __name__ == '__main__':
     app.run(debug=True)

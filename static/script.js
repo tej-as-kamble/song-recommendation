@@ -1,19 +1,9 @@
 const trackList = document.getElementById('track-list');
-// const audioPlayer = document.getElementById('audio-player');
-// const audioSource = document.getElementById('audio-source');
+const audioPlayer = document.getElementById('audio-player');
+const audioSource = document.getElementById('audio-source');
 const recommendedSongs = document.getElementById('recommended-songs');
 const musicPlayer = document.getElementById('music-player');
 
-const audioSource = document.createElement('source');
-audioSource.id = 'audio-source';
-audioSource.src = '';
-audioSource.type = 'audio/mpeg';
-
-const player = document.createElement('div');
-player.id = 'player';
-const audioPlayer = document.createElement('audio');
-audioPlayer.id = 'audio-player';
-audioPlayer.controls = true;
 
 let storeLibrary = {
     "new-release": [],
@@ -23,6 +13,8 @@ let storeLibrary = {
 };
 
 let storeSong = {};
+
+let track_for_search= null;
 
 function createTrackTable(tracks, headingText) {
     const parts = document.createDocumentFragment();
@@ -232,27 +224,69 @@ function createMusicPlayer(track){
     songName.innerText = track.songName;
     songName.id = 'song-name';
 
-    const movieName = document.createElement('h2');
-    movieName.innerText = track.album + ' (' + track.releaseYear + ')';
-    movieName.id = 'movie-name';
-            
-    const artistsName = document.createElement('h3');
+    const artistsName = document.createElement('h2');
     artistsName.innerText = track.artists;
     artistsName.id = 'artists-name';
 
+    const releaseYear = document.createElement('h3');
+    releaseYear.innerText = track.releaseYear;
+    releaseYear.id = 'release-year';
+
+    const playBtn = document.createElement('div');
+    playBtn.id = 'play-btn-div';
+
+    const playButtonDiv = document.createElement('div');
+    const playButton = document.createElement('button');
+    playButton.id = 'play-btn2';
+    playButton.innerText = 'Preview';
+    playButton.addEventListener('click', function () {
+        audioSource.src = track.previewUrl;
+        // console.log(audioSource);
+        // console.log("playButton clicked")
+        if (audioPlayer.paused) {
+            playButton.innerText = 'Pause';
+            playButton.classList.add('playing');
+            audioPlayer.play();
+        } else {
+            playButton.innerText = 'Preview';
+            playButton.classList.remove('playing');
+            audioPlayer.pause();
+        }
+    });
+    playButtonDiv.appendChild(playButton);
+    playBtn.appendChild(playButtonDiv);
+
+
+    const Spotify = document.createElement('div');
+    Spotify.id = 'spotify-link';
+
+    const spotifyBtn = document.createElement('a');
+    spotifyBtn.href = track.trackUrl;
+    spotifyBtn.target = '_blank';
+    const spotifyLogo =document.createElement('img');
+    spotifyLogo.src = '../static/images/Spotify.jpg'
+    spotifyLogo.id = 'spotify-logo';
+    const spotifyLink = document.createElement('p');
+    spotifyLink.innerText = 'Listen On Spotify';
+    spotifyBtn.appendChild(spotifyLogo);
+    spotifyBtn.appendChild(spotifyLink);
+
+    Spotify.appendChild(spotifyBtn);
+
+    playBtn.appendChild(Spotify);
+
     songAndMovieAndArtistsNameDiv.appendChild(songName);
-    songAndMovieAndArtistsNameDiv.appendChild(movieName);
     songAndMovieAndArtistsNameDiv.appendChild(artistsName);
+    songAndMovieAndArtistsNameDiv.appendChild(releaseYear);
     songDetails.appendChild(songAndMovieAndArtistsNameDiv);
+    songDetails.appendChild(playBtn);
+
             
 
-    audioPlayer.appendChild(audioSource);
     audioSource.src = track.previewUrl;
     if(audioPlayer.paused){
         audioPlayer.load();
     }
-    player.appendChild(audioPlayer);
-    songDetails.appendChild(player);
 
     parts.appendChild(songDetails);
 
@@ -280,3 +314,79 @@ function fetchMusic(id){
             .catch(error => console.error('Error fetching tracks:', error));
     }
 }
+
+
+
+
+
+
+
+function searchCSV() {
+    const query = document.getElementById('search').value.toLowerCase();
+    
+    if (track_for_search) {
+        const filteredTracks = track_for_search.filter(track => 
+            track.songName.toLowerCase().includes(query)
+        );
+        displayResults(filteredTracks.slice(0, 25));
+    } else {
+        fetch('/hidden-url/track_for_search')
+        .then(response => response.json())
+        .then(tracks => {
+            track_for_search = tracks;
+            const filteredTracks = track_for_search.filter(track => 
+                track.songName.toLowerCase().includes(query)
+            );
+            displayResults(filteredTracks.slice(0, 25));
+        })
+        .catch(error => console.error('Error fetching tracks:', error));
+    }
+}
+
+function displayResults(tracks) {
+    const resultsContainer = document.getElementById('search-results');
+    resultsContainer.innerHTML = '';
+
+    if (tracks.length === 0) {
+        resultsContainer.innerHTML = '<p>No results found</p>';
+        return;
+    }
+
+    tracks.forEach(track => {
+        const resultItem = document.createElement('a');
+        resultItem.classList.add('search-options');
+        resultItem.innerText = track.songName; 
+        resultItem.onclick = () => {
+            console.log("search working");
+            const newUrl = `/track/${track.trackId}`;
+            history.pushState(null, '', newUrl);
+            const buttons = document.querySelectorAll('.library-content-btn');
+    
+            buttons.forEach(btn => {
+                btn.classList.remove('active-btn');
+            });
+            fetchMusic(track.trackId);
+        };
+        resultsContainer.appendChild(resultItem);
+    });
+
+    resultsContainer.style.display = 'block';
+}
+
+
+document.addEventListener('click', function(event) {
+    const searchBar = document.getElementById('search');
+    const resultsContainer = document.getElementById('search-results');
+
+    if (!searchBar.contains(event.target)) {
+        resultsContainer.style.display = 'none';
+    }
+});
+
+
+document.getElementById('search').addEventListener('click', function() {
+    const resultsContainer = document.getElementById('search-results');
+    if (resultsContainer.innerHTML !== '') {
+        resultsContainer.style.display = 'block';
+    }
+});

@@ -67,14 +67,15 @@ nav {
     box-shadow: -10px 10px 7px -12px rgb(0, 0, 0);
     border-radius: 0 0 10px 10px;
     z-index: 101;
-    /* Ensure it appears on top */
 }
 
 .search-options {
     display: block;
     overflow-x: auto;
     padding: 0px 0px 5px;
-
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .search-options:hover {
