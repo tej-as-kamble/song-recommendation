@@ -77,7 +77,7 @@ function createTrackTable(tracks, headingText) {
     document.querySelectorAll('tr').forEach(row => {
         row.addEventListener('click', function() {
             const newUrl = `/track/${row.id}`;
-            history.pushState(null, '', newUrl);
+            history.pushState({trackId: row.id }, '', newUrl);
             // console.log(window.location.pathname);
 
             const buttons = document.querySelectorAll('.library-content-btn');
@@ -93,7 +93,7 @@ function createTrackTable(tracks, headingText) {
 }
 
 
-function fetchBtn(category, fetchUrl, headingText) {
+function fetchBtn(category, fetchUrl, headingText, curr_Btn) {
     if (storeLibrary[category].length > 0) {
         createTrackTable(storeLibrary[category], headingText);
     } else {
@@ -123,7 +123,7 @@ function setActive(btn) {
 function newRelease() {
     console.log("newRelease working");
     const newUrl = `/new-release`;
-    history.pushState(null, '', newUrl);
+    history.pushState({ category: 'new-release' }, '', newUrl);
 
     const curr_Btn = document.getElementById("new-releases-btn");
     setActive(curr_Btn);
@@ -131,12 +131,11 @@ function newRelease() {
     fetchBtn("new-release", '/hidden-url/tracks/new-songs', 'New Release');
 }
 
-
 function topSongs() {
     console.log("topSongs working");
     const newUrl = `/top-songs`;
-    history.pushState(null, '', newUrl);
-    
+    history.pushState({ category: 'top-songs' }, '', newUrl);
+
     const curr_Btn = document.getElementById("top-songs-btn");
     setActive(curr_Btn);
 
@@ -146,11 +145,15 @@ function topSongs() {
 function bestArtists(){
     console.log("bestArtists working");
     const newUrl = `/best-artists`;
-    history.pushState(null, '', newUrl);
+    history.pushState({ category: 'best-artists' }, '', newUrl);
 
     const curr_Btn = document.getElementById("best-artists-btn");
     setActive(curr_Btn);
 
+    bestArtistsDisplay();
+}
+
+function bestArtistsDisplay() {
     const heading = document.createElement('h2');
     heading.innerText = "We will add BEST Artists soon...";
 
@@ -159,11 +162,10 @@ function bestArtists(){
     trackList.appendChild(heading);
 }
 
-
 function newSongs() {
     console.log("newRelease working");
     const newUrl = `/new-songs`;
-    history.pushState(null, '', newUrl);
+    history.pushState({ category: 'new-songs' }, '', newUrl);
 
     const curr_Btn = document.getElementById("new-songs-btn");
     setActive(curr_Btn);
@@ -174,13 +176,51 @@ function newSongs() {
 function oldSongs(){
     console.log("topSongs working");
     const newUrl = `/old-songs`;
-    history.pushState(null, '', newUrl);
+    history.pushState({ category: 'old-songs' }, '', newUrl);
 
     const curr_Btn = document.getElementById("old-songs-btn");
     setActive(curr_Btn);
     
     fetchBtn("old-songs", '/hidden-url/tracks/old-songs', 'Old Songs');
 }
+
+
+window.addEventListener('popstate', e => {
+    const fetchMap = {
+        'top-songs': () => fetchBtn("top-songs", '/hidden-url/tracks/popular-songs', 'Popular Songs'),
+        'new-songs': () => fetchBtn("new-songs", '/hidden-url/tracks/new-songs', 'New Songs'),
+        'old-songs': () => fetchBtn("old-songs", '/hidden-url/tracks/old-songs', 'Old Songs'),
+        'best-artists': bestArtistsDisplay,
+    };
+
+    if (e.state && e.state.category) {
+        const category = e.state.category;
+        console.log("Category from popstate:", category);
+        if (category && fetchMap[category]) {
+            const curr_Btn = document.getElementById(category + "-btn");
+            console.log(category + "-btn");
+            setActive(curr_Btn);
+            fetchMap[category]();
+        } else {
+            const curr_Btn = document.getElementById("new-releases-btn");
+            setActive(curr_Btn);
+            fetchBtn("new-release", '/hidden-url/tracks/new-songs', 'New Release');
+        }
+    } else {
+        const urlSegments = window.location.pathname.split('/');
+        const trackId = urlSegments.length > 2 ? urlSegments[2] : null;
+
+        if (urlSegments[1] === "track" && trackId) {
+            console.log("Track ID from URL:", trackId);
+            fetchMusic(trackId);
+        } else {
+            const curr_Btn = document.getElementById("new-releases-btn");
+            setActive(curr_Btn);
+            fetchBtn("new-release", '/hidden-url/tracks/new-songs', 'New Release');
+        }
+    }
+});
+
 
 
 const url_pathname = window.location.pathname.split('/');
