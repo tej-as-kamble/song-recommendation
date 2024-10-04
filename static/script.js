@@ -16,6 +16,8 @@ let storeSong = {};
 
 let track_for_search= null;
 
+let prevSongSrc = audioSource.src;
+
 function createTrackTable(tracks, headingText) {
     const parts = document.createDocumentFragment();
 
@@ -281,6 +283,10 @@ function createMusicPlayer(track){
     playButton.innerText = 'Preview';
     playButton.addEventListener('click', function () {
         audioSource.src = track.previewUrl;
+        if(prevSongSrc!=audioSource.src){
+            audioPlayer.load();
+            prevSongSrc = audioSource.src;
+        }
         // console.log(audioSource);
         // console.log("playButton clicked")
         if (audioPlayer.paused) {
@@ -368,7 +374,7 @@ function searchCSV() {
         const filteredTracks = track_for_search.filter(track => 
             track.songName.toLowerCase().includes(query)
         );
-        displayResults(filteredTracks.slice(0, 25));
+        displayResults(filteredTracks);
     } else {
         fetch('/hidden-url/track_for_search')
         .then(response => response.json())
@@ -377,7 +383,7 @@ function searchCSV() {
             const filteredTracks = track_for_search.filter(track => 
                 track.songName.toLowerCase().includes(query)
             );
-            displayResults(filteredTracks.slice(0, 25));
+            displayResults(filteredTracks);
         })
         .catch(error => console.error('Error fetching tracks:', error));
     }
