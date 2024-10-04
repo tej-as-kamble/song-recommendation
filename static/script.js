@@ -18,7 +18,9 @@ let track_for_search= null;
 
 let prevSongSrc = audioSource.src;
 
-function createTrackTable(tracks, headingText) {
+let storeRecommened = {};
+
+function createTrackTable(tracks, headingText, tableId) {
     const parts = document.createDocumentFragment();
 
     const heading = document.createElement('h2');
@@ -72,9 +74,13 @@ function createTrackTable(tracks, headingText) {
     table.appendChild(tbody);
     parts.appendChild(table);
 
-    musicPlayer.innerHTML = '';
-    trackList.innerHTML = '';
-    trackList.appendChild(parts);
+    // console.log(tablename);
+    if(tableId==trackList){
+        musicPlayer.innerHTML = '';
+        recommendedSongs.innerHTML = '';
+    }
+    tableId.innerHTML = '';
+    tableId.appendChild(parts);
 
     document.querySelectorAll('tr').forEach(row => {
         row.addEventListener('click', function() {
@@ -97,13 +103,13 @@ function createTrackTable(tracks, headingText) {
 
 function fetchBtn(category, fetchUrl, headingText, curr_Btn) {
     if (storeLibrary[category].length > 0) {
-        createTrackTable(storeLibrary[category], headingText);
+        createTrackTable(storeLibrary[category], headingText, trackList);
     } else {
         fetch(fetchUrl)
             .then(response => response.json())
             .then(tracks => {
                 storeLibrary[category] = tracks; // Store fetched data as raw data
-                createTrackTable(tracks, headingText);
+                createTrackTable(tracks, headingText, trackList);
             })
             .catch(error => console.error(`Error fetching ${category} tracks:`, error));
     }
@@ -347,6 +353,7 @@ function fetchMusic(id){
     if (storeSong[id]) {
         console.log("song exist in storeSong");
         createMusicPlayer(storeSong[id]);
+        createTrackTable(storeRecommened[id], 'Recommended Songs', recommendedSongs)
     }
     else{
         const url = `/hidden-url/track/${id}`;
@@ -354,10 +361,16 @@ function fetchMusic(id){
             .then(response => response.json())
             .then(track => {
                 // console.log(track);
-                storeSong[id]=track;
-                createMusicPlayer(track);
+                storeSong[id]=track[0];
+                storeRecommened[id]=track[1];
+                createMusicPlayer(track[0]);
+                createTrackTable(track[1], 'Recommended Songs', recommendedSongs)
             })
-            .catch(error => console.error('Error fetching tracks:', error));
+            .catch(error => {
+                console.error('Error fetching tracks:', error);
+                alert("Invalid URL Song NOT Found...");
+                newRelease();
+            });
     }
 }
 
