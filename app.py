@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Load data from CSV
 data = pd.read_csv('dataset/data.csv')
-similarity = pickle.load(open('model\similarity.pkl', 'rb'))
+similarity = pickle.load(open('model/similarity.pkl', 'rb'))
 
 tracks = []
 for index, row in data.iterrows():
